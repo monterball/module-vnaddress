@@ -1,4 +1,4 @@
-# Mage2 Module AgmCrm Loyalty
+# Eloab vendor Magento 2 Module VNAddress
 
     ``eloab/module-vnaddress``
 
