@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="vnaddress_manage_index_listing_data_source"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="resourceModel" xsi:type="string">Eloab\VNAddress\Model\ResourceModel\Region\Collection
+            </argument>
+            <argument name="mainTable" xsi:type="string">directory_country_region</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument xsi:type="array">
+                <item xsi:type="string" name="vnaddress_manage_index_listing_data_source">
+                    vnaddress_manage_index_listing_data_source
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

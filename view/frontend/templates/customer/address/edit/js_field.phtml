@@ -1,0 +1,123 @@
+<?php
+/** @var \Eloab\VNAddress\Helper\Address $addressHelper */
+/** @var \Magento\Customer\Block\Address\Edit $block */
+$addressHelper = $this->helper('Eloab\VNAddress\Helper\Address');
+?>
+<script>
+    require(['jquery'], function($) {
+
+        var DistrictData = <?= json_encode($addressHelper->getDistrictData())?>,
+            SubDistrictData = <?= json_encode($addressHelper->getSubDistrictData())?>,
+            DistrictSelect = $("select#city_id"),
+            DistrictInput = $("input#city"),
+            SubDistrictSelect = $("select#sub_district");
+
+
+        var AddressUpdater = {
+            regionIdFlag: <?= $block->getAddress()->getRegionId() ? $block->getAddress()->getRegionId() : '""'  ?>,
+            districtIdFlag: '<?= $block->getAddress()->getCity() ? $block->getAddress()->getCity() : '""' ?>',
+            subDistrictIdFlag: '<?= ($sudDistrict = $addressHelper->getSubDistrictObj($block->getAddress())) ?
+                $escaper->escapeHtmlAttr($sudDistrict->getId()) : '' ?>',
+
+            init: function() {
+                this.insertDistrictOptions(true);
+                this.eventChangeRegion();
+                this.eventChangeDistrict();
+
+            },
+            insertDistrictOptions: function(initValue) {
+
+                var self = this;
+                var shouldFillValue = !!initValue;
+                var regionId = $("#region_id").val();
+                var country = $("#country_id").val();
+                if (shouldFillValue) {
+                    regionId = this.regionIdFlag; // init value
+                }
+
+                var districtId = DistrictSelect.val();
+                if (!districtId) {
+                    districtId = this.districtIdFlag; // init value
+                }
+
+                var districtOptions = DistrictData.filter(function(d) {
+                    return d.region_id == regionId;
+                });
+                DistrictSelect.find("option+option").remove();
+                if (districtOptions.length) {
+
+                    districtOptions.forEach(function(d) {
+                        DistrictSelect.append('<option value="'+d.district_id+'">'+d.name+'</option>');
+                    });
+                    DistrictSelect.show();
+                    DistrictInput.hide();
+                    if (shouldFillValue) {
+                        DistrictSelect.val(districtId);
+                    }
+
+                }   else {
+                    DistrictSelect.hide();
+                    DistrictInput.show();
+                }
+                this.insertSubDistrictOptions(shouldFillValue);
+            },
+            insertSubDistrictOptions: function(initValue) {
+                var self = this;
+                var shouldFillValue = !!initValue;
+                var districtId = DistrictSelect.val();
+                if (shouldFillValue) {
+                    districtId = this.districtIdFlag; // init value
+                }
+
+                var subDistrictId = SubDistrictSelect.val();
+                if (!subDistrictId) {
+                    subDistrictId = this.subDistrictIdFlag; // init value
+                }
+
+                var subDistrictOptions = SubDistrictData.filter(function(s) {
+                    return s.district_id == districtId;
+                });
+                SubDistrictSelect.find("option+option").remove();
+                if (subDistrictOptions.length) {
+
+                    subDistrictOptions.forEach(function(s) {
+                        SubDistrictSelect.append('<option value="'+s.subdistrict_id+'">'+s.name+'</option>');
+                    });
+                    SubDistrictSelect.parents('.field').show();
+                    SubDistrictSelect.show();
+
+                    if (shouldFillValue) {
+                        SubDistrictSelect.val(subDistrictId);
+                    }
+                }   else {
+                    SubDistrictSelect.parents('.field').hide();
+                }
+            },
+            eventChangeRegion: function (){
+                var self = this;
+                $("#country").change(function() {
+                    if ($(this).val() ===
+                        <?= \Eloab\VNAddress\Setup\Patch\Data\AddAreaForVN::VN_COUNTRY_ID ?>) {
+                        self.insertDistrictOptions();
+                    }   else {
+                        DistrictSelect.hide();
+                        DistrictInput.show().val('');
+                        SubDistrictSelect.parents('.field').hide();
+                    }
+                });
+                $("#region_id").change(function(){
+                    self.insertDistrictOptions();
+                });
+            },
+            eventChangeDistrict: function() {
+                var self = this;
+                $(document).on('change', "select#city_id", function() {
+                    DistrictInput.val($(this).val());
+                    self.insertSubDistrictOptions();
+                });
+            }
+
+        };
+        AddressUpdater.init();
+    });
+</script>

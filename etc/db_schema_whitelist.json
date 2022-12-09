@@ -1,0 +1,73 @@
+{
+    "sales_order_address": {
+        "column": {
+            "sub_district": true
+        }
+    },
+    "quote_address": {
+        "column": {
+            "sub_district": true
+        }
+    },
+    "customer_address_entity": {
+        "column": {
+            "sub_district": true
+        }
+    },
+    "directory_region_district": {
+        "column": {
+            "district_id": true,
+            "district_code": true,
+            "region_id": true,
+            "default_name": true
+        },
+        "index": {
+            "DIRECTORY_REGION_DISTRICT_REGION_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "directory_country_region_district_name": {
+        "column": {
+            "locale": true,
+            "district_id": true,
+            "name": true
+        },
+        "index": {
+            "DIRECTORY_COUNTRY_REGION_DISTRICT_NAME_DISTRICT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_C1CC1DBF23DF7693957CAA782EFC65F5": true
+        }
+    },
+    "directory_district_subdistrict": {
+        "column": {
+            "subdistrict_id": true,
+            "subdistrict_code": true,
+            "district_id": true,
+            "default_name": true
+        },
+        "index": {
+            "DIRECTORY_DISTRICT_SUBDISTRICT_DISTRICT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "directory_country_region_district_subdistrict_name": {
+        "column": {
+            "locale": true,
+            "subdistrict_id": true,
+            "name": true
+        },
+        "index": {
+            "DIR_COUNTRY_REGION_DISTRICT_SUBDISTRICT_NAME_SUBDISTRICT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_BFEF83275EF9E2C5EFBF24408121C36E": true
+        }
+    }
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!--  Render Subdistrcit in customer address-->
+    <event name="customer_address_format">
+        <observer name="eloab_vnaddress_customer_address_format" instance="Eloab\VNAddress\Observer\Order\Address\RendererSubDistrict" />
+    </event>
+
+    <event name="sales_quote_address_save_before">
+        <observer name="eloab_vnaddress_sales_quote_address_save_sub_district" instance="Eloab\VNAddress\Observer\Quote\Address\SaveSubDistrict" />
+    </event>
+    <event name="sales_quote_address_load_before">
+        <observer name="eloab_vnaddress_sales_quote_address_save_sub_district" instance="Eloab\VNAddress\Observer\Quote\Address\LoadSubDistrict" />
+    </event>
+    <event name="sales_order_address_save_before">
+        <observer name="eloab_vnaddress_sales_order_address_save_sub_district" instance="Eloab\VNAddress\Observer\Order\Address\SaveSubDistrict" />
+    </event>
+    <event name="sales_order_address_load_before">
+        <observer name="eloab_vnaddress_sales_order_address_load_sub_district" instance="Eloab\VNAddress\Observer\Order\Address\LoadSubDistrict" />
+    </event>
+
+    <event name="checkout_submit_all_after">
+        <observer name="eloab_vnaddress_sales_submit_order_save_customer_address" instance="Eloab\VNAddress\Observer\CheckoutSubmitAllAfter" />
+    </event>
+</config>

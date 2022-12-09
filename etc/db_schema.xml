@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+	<table name="sales_order_address">
+		<column name="sub_district" nullable="true" xsi:type="varchar" length="256" comment="Ward"/>
+	</table>
+	<table name="quote_address">
+		<column name="sub_district" nullable="true" xsi:type="varchar" length="256" comment="Ward"/>
+	</table>
+    <table name="customer_address_entity">
+        <column name="sub_district" nullable="true" xsi:type="varchar" length="256" comment="Ward"/>
+    </table>
+
+	<!-- District Table -->
+	<table name="directory_region_district" resource="default" engine="innodb" comment="Directory Country Region District">
+        <column xsi:type="int" name="district_id" unsigned="true" nullable="false" identity="true"
+                comment="District ID"/>
+        <column xsi:type="int" name="region_id" nullable="false" comment="Region Id"/>
+        <column xsi:type="varchar" name="district_code" nullable="true" length="255" comment="District Code"/>
+        <column xsi:type="varchar" name="default_name" nullable="true" length="255" comment="District Name"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="district_id"/>
+        </constraint>
+        <index referenceId="DIRECTORY_COUNTRY_REGION_DISTRICT_REGION_ID" indexType="btree">
+            <column name="region_id"/>
+        </index>
+    </table>
+
+    <table name="directory_country_region_district_name" resource="default" engine="innodb" comment="Directory District Name">
+		<column xsi:type="varchar" name="locale" nullable="false" length="16" comment="Locale"/>
+        <column xsi:type="int" name="district_id" unsigned="true" nullable="false" identity="false"
+                default="0" comment="District ID"/>
+        <column xsi:type="varchar" name="name" nullable="true" length="255" comment="District Name"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="locale"/>
+            <column name="district_id"/>
+        </constraint>
+
+        <constraint xsi:type="foreign" referenceId="DIR_COUNTRY_REGION_DISTRICT_NAME_DISTRICT_ID_DIR_REGION_DISTRICT_DISTRICT_ID"
+                    table="directory_country_region_district_name"
+                    column="district_id" referenceTable="directory_region_district"
+                    referenceColumn="district_id" onDelete="CASCADE"
+        />
+        <index referenceId="DIRECTORY_COUNTRY_REGION_DISTRICT_NAME_DISTRICT_ID" indexType="btree">
+            <column name="district_id"/>
+        </index>
+	</table>
+
+    <!-- End District Table -->
+
+    <!-- SubDistrict Table -->
+    <table name="directory_district_subdistrict" resource="default" engine="innodb" comment="Directory District Subdistrict">
+        <column xsi:type="int" name="subdistrict_id" unsigned="true" nullable="false" identity="true"
+                comment="Subdistrict ID"/>
+        <column xsi:type="int" name="district_id" nullable="false" comment="District id"/>
+        <column xsi:type="varchar" name="subdistrict_code" nullable="true" length="255" comment="Subdistrict Code"/>
+        <column xsi:type="varchar" name="default_name" nullable="true" length="255" comment="Subdistrict Name"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="subdistrict_id"/>
+        </constraint>
+        <index referenceId="DIRECTORY_DISTRICT_SUBDISTRICT_DISTRICT_ID" indexType="btree">
+            <column name="district_id"/>
+        </index>
+    </table>
+
+    <table name="directory_country_region_district_subdistrict_name" resource="default" engine="innodb" comment="Directory Subdistrict Name">
+		<column xsi:type="varchar" name="locale" nullable="false" length="16" comment="Locale"/>
+        <column xsi:type="int" name="subdistrict_id" unsigned="true" nullable="false" identity="false"
+                default="0" comment="Subdistrict ID"/>
+        <column xsi:type="varchar" name="name" nullable="true" length="255" comment="Subdistrict Name"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="locale"/>
+            <column name="subdistrict_id"/>
+        </constraint>
+
+        <constraint xsi:type="foreign" referenceId="DIR_COUNTRY_REGION_DISTRICT_SUBDISTRICT_NAME_SUBDISTRICT_ID_DISTRICT_SUBDISTRICT_SUBDISTRICT_ID"
+                    table="directory_country_region_district_subdistrict_name"
+                    column="subdistrict_id" referenceTable="directory_district_subdistrict"
+                    referenceColumn="subdistrict_id" onDelete="CASCADE"
+        />
+        <index referenceId="DIRECTORY_COUNTRY_REGION_DISTRICT_SUBDISTRICT_NAME_SUBDISTRICT_ID" indexType="btree">
+            <column name="subdistrict_id"/>
+        </index>
+	</table>
+    <!-- End SubDistrict Table -->
+
+</schema>

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="Eloab_VNAddress_Plugin_Frontend_LayoutProcessor_Magento_Checkout_Block_Checkout"
+                type="Eloab\VNAddress\Plugin\Frontend\Checkout\LayoutProcessor"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+    <!--    Address Data Formatter-->
+    <type name="Magento\Customer\Model\Address\CustomerAddressDataFormatter">
+        <plugin name="Eloab_VNAddress_Plugin_Frontend_CustomerAddressDataFormatter_Magento_Customer_Model_Address"
+                type="Eloab\VNAddress\Plugin\Frontend\Customer\CustomerAddressDataFormatter"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+    <!--    Checkout Directory-->
+    <type name="Magento\Checkout\Block\Checkout\DirectoryDataProcessor">
+        <plugin name="Eloab_VNAddress_Plugin_Frontend_DirectoryDataProcessor_Magento_Checkout_Block_Checkout"
+                type="Eloab\VNAddress\Plugin\Frontend\Checkout\DirectoryDataProcessor"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+    <!--    Address grid render-->
+    <type name="Magento\Customer\Block\Address\Grid">
+        <plugin name="Eloab_VNAddress_Plugin_Frontend_Customer_Block_Address_Grid"
+                type="Eloab\VNAddress\Plugin\Frontend\Customer\Block\Address\Grid"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+    <!--    Address book render -->
+    <type name="Magento\Customer\Block\Address\Book">
+        <plugin name="Eloab_VNAddress_Plugin_Frontend_Customer_Block_Address_Book"
+                type="Eloab\VNAddress\Plugin\Frontend\Customer\Block\Address\Book"
+                sortOrder="10"
+                disabled="false"/>
+    </type>
+    <!--    Address render in customer dashboard -->
+    <type name="Magento\Customer\Block\Account\Dashboard\Address">
+    <plugin name="Eloab_VNAddress_Plugin_Frontend_Customer_Block_Account_Dashboard_Address"
+            type="Eloab\VNAddress\Plugin\Frontend\Customer\Block\Account\Dashboard\Address"
+            sortOrder="10"
+            disabled="false"/>
+    </type>
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="vn_address_data" xsi:type="object">Eloab\VNAddress\Model\VNAddressConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>

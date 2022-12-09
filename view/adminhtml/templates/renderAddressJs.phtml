@@ -1,0 +1,139 @@
+<?php
+/** @var \Eloab\VNAddress\Block\Adminhtml\Order\RenderAddress $block */
+$currentLocation = $block->getCurrentLocation();
+if (!empty($currentLocation)) {
+    $districtList = $block->getDistrictList($currentLocation['area_id']);
+    ?>
+        <script>
+            require(['jquery', "domReady!"], function ($) {
+                document.querySelector('#city').style.display = 'none';
+                document.querySelector('#sub_district').style.display = 'none';
+                let inputDistrict = $('#city'),
+                    dropdownSubdistrcit = $('#sub_district');
+                let htmlDistrictDropDown = "<select id='district' name='district' class='select admin__control-select'>";
+                let htmlSubDistrictDropDown = "<select id='subdistrict' name='subdistrict' class='select admin__control-select'>";
+                <?php
+                $optionList = "";
+                foreach ($districtList as $district) {
+                    $optionList .= "<option value='".$district['district_id']."' ";
+                    if ($currentLocation['district'] == $district['district']) {
+                        $optionList .= "selected='selected'";
+                    }
+                    $optionList .= ">" . $district['district'] . "</option>";
+                }
+                ?>
+                htmlDistrictDropDown += "<?= $optionList ?>";
+                htmlDistrictDropDown += "</select>";
+                inputDistrict.after(htmlDistrictDropDown);
+                <?php
+                    $subDistrictList = $block->getSubDistrictList($currentLocation['district']);
+                    if (count($subDistrictList) > 0) :
+                        ?>
+                        <?php
+                        $optionList = "";
+                        foreach ($subDistrictList as $subDistrict) {
+                            $optionList .= "<option value='".$subDistrict['subdistrict_id']."' ";
+                            if ($currentLocation['subdistrict_id'] == $subDistrict['subdistrict_id']) {
+                                $optionList .= "selected='selected'";
+                            }
+                            $optionList .= ">" . $subDistrict['subdistrict'] . "</option>";
+                        }
+                        ?>
+                        htmlSubDistrictDropDown += "<?= $optionList ?>";
+                        htmlSubDistrictDropDown += "</select>";
+                        dropdownSubdistrcit.after(htmlSubDistrictDropDown);
+                    <?php
+                    else:
+                    ?>
+
+                    <?php
+
+                    endif;
+                    ?>
+
+                $('#region_id').on('change', function (e) {
+                    console.log($(this).val());
+                    new Ajax.Request('<?= $block->getUrlGetDistrictList()?>', {
+                        parameters: {
+                            area_id:  JSON.stringify($(this).val()),
+                        },
+                        onSuccess: function(response) {
+                            var returnData = response.responseJSON;
+                            console.log(returnData);
+                            if (returnData.status === 1) {
+                                let dropdownDistrict = $('#district');
+                                let returnDistricts = returnData.districts,
+                                    html = '';
+                                for (let $count = 0; $count < returnDistricts.length; $count++) {
+                                    html += "<option value='"+ returnDistricts[$count].district_id +"'>";
+                                    html += returnDistricts[$count].district;
+                                    html += "</option>";
+                                }
+
+                                dropdownDistrict.html(html);
+                                $("#city").val(returnData.district_default).trigger('change');
+                                $("#district").val(returnData.district_default_id).trigger('change');
+                            } else {
+                                console.log(returnData.message);
+                            }
+
+                        }
+                    });
+                });
+                $('#district').on('change', function (e) {
+                    console.log('district change');
+                    console.log($(this).val());
+                    console.log($(this).find('option:selected'));
+                    $("#city").val($(this).find('option:selected').text()).trigger('change');
+                    new Ajax.Request('<?= $block->getUrlGetSubDistrictList()?>', {
+                        parameters: {
+                            district_id:  $(this).val(),
+                        },
+                        onSuccess: function(response) {
+                            var returnData = response.responseJSON;
+                            console.log(returnData);
+                            if (returnData.status === 1) {
+                                let dropdownSubDistrict = $('#subdistrict');
+                                console.log(dropdownSubDistrict.length);
+                                if (dropdownSubDistrict.length > 0) {
+                                    console.log('already');
+                                    let returnSubDistricts = returnData.subdistricts;
+                                    let html = "";
+                                    for (let $count = 0; $count < returnSubDistricts.length; $count++) {
+                                        html += "<option value='"+ returnSubDistricts[$count].subdistrict_id +"'>";
+                                        html += returnSubDistricts[$count].subdistrict;
+                                        html += "</option>";
+                                    }
+                                    dropdownSubDistrict.html(html);
+                                    dropdownSubDistrict.val(returnData.default_subdistrict).trigger('change');
+                                } else {
+                                    console.log('not already');
+                                    let returnSubDistricts = returnData.subdistricts;
+                                    let html = "<select id='subdistrict' name='subdistrict' class='select admin__control-select'>";
+                                    for (let $count = 0; $count < returnSubDistricts.length; $count++) {
+                                        html += "<option value='"+ returnSubDistricts[$count].subdistrict_id +"'>";
+                                        html += returnSubDistricts[$count].subdistrict;
+                                        html += "</option>";
+                                    }
+                                    html += "</select>";
+                                    $('#sub_district').after(html);
+                                    $('#subdistrict').val(returnData.default_subdistrict).trigger('change');
+                                }
+
+                            } else {
+                                console.log(returnData.message);
+                            }
+
+                        }
+                    });
+                });
+                $('#subdistrict').on('change', function (e) {
+                    console.log('ward change');
+                    console.log($(this).val());
+                    $("#sub_district").val($(this).val()).trigger('change');
+                });
+            });
+        </script>
+    <?php
+}
+

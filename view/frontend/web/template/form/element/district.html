@@ -1,0 +1,19 @@
+<select class="select" data-bind="
+    attr: {
+        name: inputName,
+        id: uid,
+        disabled: disabled,
+        'aria-describedby': getDescriptionId(),
+        'aria-required': required,
+        'aria-invalid': error() ? true : 'false',
+        placeholder: placeholder
+    },
+    
+    options: options,
+    hasFocus: focused,
+    value: value,
+    optionsCaption: 'Please Select',
+    optionsValue: 'value',
+    optionsText: 'label',
+    "
+></select>
