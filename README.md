@@ -35,3 +35,7 @@ View address saved for VN in Eloab / VietNam Address List
  - enable the module by running `php bin/magento module:enable Eloab_VNAddress`
  - apply database updates by running `php bin/magento setup:upgrade`\*
  - Flush the cache by running `php bin/magento cache:flush`
+
+
+
+## Still development for address render view in Backend and Update new address function
