@@ -16,7 +16,7 @@ View address saved for VN in Eloab / VietNam Address List
 
 ### Type 1: Zip file
 
- - Install the module `Eloab_Base` before install this extension
+ - Install the module `Eloab_Base` before install this extension `https://github.com/monterball/module-base`
  - Unzip the zip file in `app/code/Eloab`
  - Enable the module by running `php bin/magento module:enable Eloab_VNAddress`
  - Apply database updates by running `php bin/magento setup:upgrade`\*
@@ -24,15 +24,7 @@ View address saved for VN in Eloab / VietNam Address List
 
 ### Type 2: Composer
 
- - Make the module available in a composer repository for example:
-    - private repository `repo.magento.com`
-    - public repository `packagist.org`
-    - public github repository as vcs
- - Add the composer repository to the configuration by running `composer config repositories.repo.magento.com composer https://repo.magento.com/`
- - Install the module composer by running `composer require eloab/module-vnaddress`
- - enable the module by running `php bin/magento module:enable Eloab_VNAddress`
- - apply database updates by running `php bin/magento setup:upgrade`\*
- - Flush the cache by running `php bin/magento cache:flush`
+ - Updating ...
 
 
 
