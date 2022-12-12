@@ -1,6 +1,4 @@
-# Eloab vendor Magento 2 Module VNAddress
-
-    ``eloab/module-vnaddress``
+# Vietnamese Address Pack for Magento 2 - Eloab
 
  - [Main Functionalities](#markdown-header-main-functionalities)
  - [Installation](#markdown-header-installation)
