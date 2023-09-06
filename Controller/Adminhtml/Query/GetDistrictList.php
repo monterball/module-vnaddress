@@ -2,6 +2,8 @@
 
 namespace Eloab\VNAddress\Controller\Adminhtml\Query;
 
+use Eloab\VNAddress\Helper\Address;
+use Eloab\VNAddress\Helper\AddressQuerySupporter;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\HttpPostActionInterface;
@@ -10,23 +12,28 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Session\SessionManagerInterface;
-use Eloab\VNAddress\Helper\Address;
-use Eloab\VNAddress\Helper\AddressQuerySupporter;
 
 class GetDistrictList extends Action implements HttpPostActionInterface
 {
     /** @var SessionManagerInterface  */
-    protected $sessionManager;
+    protected SessionManagerInterface $sessionManager;
     /** @var Address  */
-    protected $addressHelper;
+    protected Address $addressHelper;
     /** @var AddressQuerySupporter  */
-    protected $addressQuerySupporterHelper;
+    protected AddressQuerySupporter $addressQuerySupporterHelper;
 
-    public function __construct(Context $context,
-                                SessionManagerInterface $sessionManager,
-                                Address $addressHelper,
-                                AddressQuerySupporter  $addressQuerySupporterHelper)
-    {
+    /**
+     * @param Context $context
+     * @param SessionManagerInterface $sessionManager
+     * @param Address $addressHelper
+     * @param AddressQuerySupporter $addressQuerySupporterHelper
+     */
+    public function __construct(
+        Context $context,
+        SessionManagerInterface $sessionManager,
+        Address $addressHelper,
+        AddressQuerySupporter  $addressQuerySupporterHelper
+    ) {
         parent::__construct($context);
         $this->sessionManager = $sessionManager;
         $this->addressHelper = $addressHelper;
@@ -42,11 +49,12 @@ class GetDistrictList extends Action implements HttpPostActionInterface
     public function execute()
     {
         // TODO: Implement execute method.
-        $data = ['status' => 0, 'message' => __("Cannot access function from external service.")];
+        $data = ['status' => 0, 'message' => __(
+            "Cannot access function from external service.")];
         $areaId = $this->getRequest()->getParam('area_id');
         try {
             if (!empty($areaId)) {
-                $districtList = $this->getDistrictList(str_replace('"','',$areaId));
+                $districtList = $this->getDistrictList(str_replace('"', '', $areaId));
                 if (count($districtList) > 0) {
                     $data = ['status' => 1, 'message' => 'Success',
                         'area_id' => $areaId,
@@ -55,13 +63,17 @@ class GetDistrictList extends Action implements HttpPostActionInterface
                         'districts' => $districtList];
                 } else {
                     //Null district
-                    $data = ['status' => 1, 'message' => 'Success', 'area_id' => $areaId, 'district_default' => "", 'district_default_id' => "", 'districts' => $districtList];
+                    $data = ['status' => 1,
+                        'message' => 'Success',
+                        'area_id' => $areaId,
+                        'district_default' => "",
+                        'district_default_id' => "",
+                        'districts' => $districtList];
                 }
             } else {
                 $data = ['status' => 0, 'message' => __("Please enter the area Id.")];
             }
             return $this->returnJsonData($data);
-
         } catch (\Magento\Framework\Exception\SessionException $sessionException) {
             $data = ['status' => 0, 'message' => $sessionException->getMessage()];
             return $this->returnJsonData($data);
@@ -74,6 +86,10 @@ class GetDistrictList extends Action implements HttpPostActionInterface
         }
     }
 
+    /**
+     * @param $areaId
+     * @return array
+     */
     public function getDistrictList($areaId) : array
     {
         $districtListData = [];
@@ -92,7 +108,7 @@ class GetDistrictList extends Action implements HttpPostActionInterface
      * @param $data
      * @return \Magento\Framework\Controller\ResultInterface
      */
-    protected function returnJsonData($data)
+    protected function returnJsonData($data) : \Magento\Framework\Controller\ResultInterface
     {
         $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         $resultJson->setData($data);

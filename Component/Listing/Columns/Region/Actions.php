@@ -10,7 +10,7 @@ use Magento\Ui\Component\Listing\Columns\Column;
 class Actions extends Column
 {
     /** @var UrlInterface  */
-    protected $urlBuilder;
+    protected UrlInterface $urlBuilder;
 
     /** @var ContextInterface */
     protected $context;

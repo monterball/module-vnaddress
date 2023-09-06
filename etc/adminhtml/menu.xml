@@ -14,7 +14,7 @@
              resource="Eloab_VNAddress::VNAddress"/>
         <!-- Address Manager-->
         <add id="Eloab_VNAddress::VietNamAddress_Manage"
-             title="VN Address List" module="Eloab_VNAddress"
+             title="Viet Nam Address List" module="Eloab_VNAddress"
              sortOrder="10" parent="Eloab_VNAddress::VNAddress"
              action="vnaddress/manage/index"
              resource="Eloab_VNAddress::VietNamAddress_Manage"/>

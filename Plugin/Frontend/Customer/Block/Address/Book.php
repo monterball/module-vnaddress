@@ -77,8 +77,8 @@ class Book
                         if ($key == 'sub_district') {
                             $addressArray[$key] = '';
                         } elseif ($key == 'city') {
-                            $subDistrict = $this->addressHelper->getSubDistrictNameById($valueSDistrict);
-                            $addressArray[$key] = $subDistrict['name'] . ', ' . $value;
+                            $addressArray[$key] = $this->addressHelper->getSubDistrictNameById($valueSDistrict)
+                                . ', ' . $value;
                         } else {
                             $addressArray[$key] = $value;
                         }

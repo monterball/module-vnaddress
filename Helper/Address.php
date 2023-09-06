@@ -37,7 +37,22 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     protected $addressConfig;
     /** @var Mapper */
     protected $addressMapper;
+    /** @var \Magento\Framework\Locale\Resolver  */
+    protected $resolver;
 
+    /**
+     * @param Context $context
+     * @param DistrictFactory $districtFactory
+     * @param SubdistrictFactory $subdistrictFactory
+     * @param AddressFactory $addressFactory
+     * @param CollectionFactory $districtCollection
+     * @param \Eloab\VNAddress\Model\ResourceModel\Subdistrict\CollectionFactory $subdistrictCollection
+     * @param \Magento\Sales\Model\Order\AddressFactory $saleAddressFactory
+     * @param \Magento\Store\Api\Data\StoreInterface $store
+     * @param \Magento\Framework\App\ResourceConnection $resource
+     * @param \Magento\Customer\Model\Address\Config $addressConfig
+     * @param Mapper $addressMapper
+     */
     public function __construct(
         Context $context,
         DistrictFactory $districtFactory,
@@ -49,7 +64,8 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Api\Data\StoreInterface $store,
         \Magento\Framework\App\ResourceConnection $resource,
         \Magento\Customer\Model\Address\Config $addressConfig,
-        Mapper $addressMapper
+        Mapper $addressMapper,
+        \Magento\Framework\Locale\Resolver $resolver
     ) {
         $this->districtFactory = $districtFactory;
         $this->subdistrictFactory = $subdistrictFactory;
@@ -62,6 +78,7 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
         parent::__construct($context);
         $this->addressConfig = $addressConfig;
         $this->addressMapper = $addressMapper;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -87,10 +104,15 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     public function getSubDistrictName($address)
     {
         if ($subDistrict = $this->getSubDistrictObj($address)) {
-            $subDistrict = $this->getSubDistrictNameById($subDistrict->getId());
-            return $subDistrict['name'] ?? '';
+            $subDistrictName = $this->getSubDistrictNameById($subDistrict->getId());
+            return $subDistrictName ?? '';
         }
         return '';
+    }
+
+    public function getAddressObjById($addressId)
+    {
+        return $this->addressFactory->create()->load($addressId);
     }
 
     /**
@@ -102,10 +124,9 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
         if ($address->getId()) {
             $customerAddresses = $this->addressFactory->create()->load($address->getId());
             if ($customerAddresses->getData('sub_district')) {
-                $subDistrict = $this->subdistrictFactory->create()->load(
+                return $this->subdistrictFactory->create()->load(
                     $customerAddresses->getData('sub_district')
                 );
-                return $subDistrict;
             }
         }
         return null;
@@ -158,7 +179,9 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * Return Ward Data
      * @return array
+     * @throws \Zend_Db_Statement_Exception
      */
     public function getSubDistrictData()
     {
@@ -166,12 +189,7 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
         $newSubDistricts = [];
         if (count($subdistricts) > 0) {
             foreach ($subdistricts as $subdistrict) {
-                $subdistrictObj = $this->getSubDistrictNameById($subdistrict['subdistrict_id']);
-                if ($subdistrictObj) {
-                    $subdistrict['name'] = $subdistrictObj['name'];
-                } else {
-                    $subdistrict['name'] = $subdistrict['default_name'];
-                }
+                $subdistrict['name'] = $this->getSubDistrictNameById($subdistrict['subdistrict_id']);
                 $newSubDistricts[] = $subdistrict;
             }
         }
@@ -192,6 +210,107 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
             $customerAddresses->setData('sub_district', $subdistrictId);
             $customerAddresses->save();
         }
+    }
+
+    /**
+     * Region by ID district
+     * @param $id
+     * @param $locale
+     * @return array|mixed
+     * @throws \Zend_Db_Statement_Exception
+     */
+    public function getRegionNameById($id, $locale = null)
+    {
+        $adapter = $this->resource->getConnection();
+        $tableName = $adapter->getTableName('directory_country_region_name');
+
+        $select = $adapter->select()
+            ->from($tableName, ['name'])
+            ->where('region_id = ?', $id);
+        if (!$locale) {
+            $locale =  $this->resolver->getLocale();
+        }
+        $select->where('locale = ?', $locale)->limit(1);
+
+        return $adapter->fetchOne($select) ?? '';
+    }
+
+    /**
+     * District Name by ID district
+     * @param $id
+     * @param $locale
+     * @return array|mixed
+     * @throws \Zend_Db_Statement_Exception
+     */
+    public function getDistrictNameById($id, $locale = null)
+    {
+        $adapter = $this->resource->getConnection();
+        $tableName = $adapter->getTableName('directory_country_region_district_name');
+        $select = $adapter->select()
+            ->from($tableName, ['name'])
+            ->where('district_id = ?', $id);
+        if (!$locale) {
+            $locale =  $this->getLocale();
+        }
+        $select->where('locale = ?', $locale)->limit(1);
+
+        return $adapter->fetchOne($select) ?? '';
+    }
+
+    /**
+     * Ward Name by ID district
+     * @param $id
+     * @param $locale
+     * @return array|mixed
+     * @throws \Zend_Db_Statement_Exception
+     */
+    public function getSubDistrictNameById($id, $locale = null)
+    {
+        $adapter = $this->resource->getConnection();
+        $tableName = $adapter->getTableName('directory_country_region_district_subdistrict_name');
+
+        $select = $adapter->select()
+            ->from($tableName, ['name'])
+            ->where('subdistrict_id = ?', $id);
+        if (!$locale) {
+            $locale =  $this->getLocale();
+        }
+        $select->where('locale = ?', $locale)->limit(1);
+
+        return $adapter->fetchOne($select) ?? '';
+    }
+
+    /**
+     * Render an address as HTML and return the result
+     *
+     * @param AddressInterface $address
+     * @param string $type
+     * @return string
+     */
+    public function getAddressRender(AddressInterface $address, string $type = 'html') : string
+    {
+        $builtOutputAddressData = $this->addressMapper->toFlatArray($address);
+        $addressArray = [];
+        if (!empty($valueSDistrict = $builtOutputAddressData['sub_district'])) {
+            foreach ($this->addressMapper->toFlatArray($address) as $key => $value) {
+                if ($key == 'sub_district') {
+                    continue;
+                } elseif ($key == 'city') {
+                    $districtName = $this->getDistrictNameById($value);
+                    $subDistrictName = $this->getSubDistrictNameById($valueSDistrict);
+
+                    $addressArray[$key] = $subDistrictName . ', ' . $districtName;
+                } else {
+                    $addressArray[$key] = $value;
+                }
+            }
+        } else {
+            $addressArray = $builtOutputAddressData;
+        }
+        return $this->addressConfig
+            ->getFormatByCode($type)
+            ->getRenderer()
+            ->renderArray($addressArray);
     }
 
     /**
@@ -287,113 +406,12 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * District Name by ID district
-     * @param $id
-     * @return array|mixed
-     * @throws \Zend_Db_Statement_Exception
-     */
-    public function getDistrictNameById($id)
-    {
-        $adapter = $this->resource->getConnection();
-        $tableName = $adapter->getTableName('directory_country_region_district_name');
-        // add for All Page
-        $select = $adapter->select()->from(
-            ['mainTbl' => $tableName],
-            ['*']
-        )->where(
-            'district_id = ?',
-            $id
-        );
-
-        $data = [];
-        $query = $adapter->query($select);
-        while ($row = $query->fetch()) {
-            array_push($data, $row);
-        }
-
-        if (count($data) > 0) {
-            foreach ($data as $district) {
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $store = $objectManager->get('Magento\Framework\Locale\Resolver');
-                $locale =  $store->getLocale();
-                if (!empty($district['locale']) && $district['locale'] == $locale) {
-                    return $district;
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Ward Name by ID district
-     * @param $id
-     * @return array|mixed
-     * @throws \Zend_Db_Statement_Exception
-     */
-    public function getSubDistrictNameById($id)
-    {
-        $adapter = $this->resource->getConnection();
-        $tableName = $adapter->getTableName('directory_country_region_district_subdistrict_name');
-        // add for All Page
-        $select = $adapter->select()->from(
-            ['mainTbl' => $tableName],
-            ['*']
-        )->where(
-            'subdistrict_id = ?',
-            $id
-        );
-
-        $data = [];
-        $query = $adapter->query($select);
-        while ($row = $query->fetch()) {
-            array_push($data, $row);
-        }
-
-        if (count($data) > 0) {
-            foreach ($data as $subdistrict) {
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $store = $objectManager->get('Magento\Framework\Locale\Resolver');
-                $locale =  $store->getLocale();
-                if (!empty($subdistrict['locale']) && $subdistrict['locale'] == $locale) {
-                    return $subdistrict;
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * Render an address as HTML and return the result
-     *
-     * @param AddressInterface $address
-     * @param string $type
      * @return string
      */
-    public function getAddressRender(AddressInterface $address, string $type = 'html') : string
+    public function getLocale()
     {
-        $builtOutputAddressData = $this->addressMapper->toFlatArray($address);
-        $addressArray = [];
-        if (!empty($valueSDistrict = $builtOutputAddressData['sub_district'])) {
-            foreach ($this->addressMapper->toFlatArray($address) as $key => $value) {
-                if ($key == 'sub_district') {
-                    continue;
-                } elseif ($key == 'city') {
-                    $districtName = $this->getDistrictNameById($value)['name'];
-                    $subDistrict = $this->getSubDistrictNameById($valueSDistrict);
-
-                    $addressArray[$key] = $subDistrict['name'] . ', ' . $districtName;
-                } else {
-                    $addressArray[$key] = $value;
-                }
-            }
-        } else {
-            $addressArray = $builtOutputAddressData;
-        }
-        return $this->addressConfig
-            ->getFormatByCode($type)
-            ->getRenderer()
-            ->renderArray($addressArray);
+        return $this->resolver->getLocale();
     }
+
+
 }

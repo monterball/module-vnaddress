@@ -45,10 +45,11 @@ class SubDistrict extends Column
     {
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $address = $objectManager->create('Magento\Customer\Model\Address')->load($item['entity_id']);
+                $address = $this->addressHelper->getAddressObjById($item['entity_id']);
                 if ($address->getData('sub_district')) {
-                    $subdistrictName = $this->addressHelper->getSubDistrictName($address);
+                    $subdistrictName = $this->addressHelper->getSubDistrictNameById(
+                        $address->getData('sub_district')
+                    );
                     $item[$this->getData('name')] = $subdistrictName;
                 }
 

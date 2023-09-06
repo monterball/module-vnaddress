@@ -33,7 +33,7 @@ class RendererSubDistrict implements \Magento\Framework\Event\ObserverInterface
     ): void {
         $address = $observer->getAddress();
 
-        //Get and check the ward Id is exist or not
+        //Get and check the ward ID is exist or not
         if ($subdistrictId = $address->getData('sub_district')) {
             //Hidden this field
             $address->setData('sub_district', null);
@@ -52,8 +52,8 @@ class RendererSubDistrict implements \Magento\Framework\Event\ObserverInterface
      */
     private function getSubDistrictName($subdistrictId): string
     {
-        if ($subdistrict = $this->addressHelper->getSubDistrictNameById($subdistrictId)) {
-            return $subdistrict['name'] ?? '';
+        if ($subdistrictName = $this->addressHelper->getSubDistrictNameById($subdistrictId)) {
+            return $subdistrictName;
         }
         return '';
     }

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Data source for Region list-->
     <virtualType name="vnaddress_manage_index_listing_data_source"
                  type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
@@ -14,6 +16,24 @@
             <argument xsi:type="array">
                 <item xsi:type="string" name="vnaddress_manage_index_listing_data_source">
                     vnaddress_manage_index_listing_data_source
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Data source for District list-->
+    <virtualType name="vnaddress_district_manage_index_listing_data_source"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="resourceModel" xsi:type="string">Eloab\VNAddress\Model\ResourceModel\District\Collection
+            </argument>
+            <argument name="mainTable" xsi:type="string">directory_region_district</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument xsi:type="array">
+                <item xsi:type="string" name="vnaddress_district_manage_index_listing_data_source">
+                    vnaddress_district_manage_index_listing_data_source
                 </item>
             </argument>
         </arguments>

@@ -48,9 +48,13 @@ class GetSubDistrictList extends Action implements HttpPostActionInterface
             if (!empty($districtId)) {
                 $subDistrictList = $this->getSubDistrictList(trim(str_replace('"','',$districtId)));
                 if (count($subDistrictList) > 0) {
-                    $data = ['status' => 1, 'message' => 'Success', 'district_id' => trim(str_replace('"','',$districtId)), 'default_subdistrict' => $subDistrictList[0]['subdistrict_id'], 'subdistricts' => $subDistrictList];
+                    $data = ['status' => 1, 'message' => 'Success',
+                        'district_id' => trim(str_replace('"','',$districtId)),
+                        'default_subdistrict' => $subDistrictList[0]['subdistrict_id'], 'subdistricts' => $subDistrictList];
                 } else {
-                    $data = ['status' => 1, 'message' => 'Success', 'district_id' => trim(str_replace('"','',$districtId)), 'default_subdistrict' => "", 'subdistricts' => $subDistrictList];
+                    $data = ['status' => 1, 'message' => 'Success',
+                        'district_id' => trim(str_replace('"','',$districtId)),
+                        'default_subdistrict' => "", 'subdistricts' => $subDistrictList];
                 }
             } else {
                 $data = ['status' => 0, 'message' => __("Please enter the district id.")];

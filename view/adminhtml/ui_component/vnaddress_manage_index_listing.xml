@@ -28,7 +28,7 @@
             <updateUrl path="mui/index/render"/>
         </settings>
         <aclResource>Eloab_VNAddress::listing</aclResource>
-        <dataProvider class="Eloab\VNAddress\Model\Element\UiComponent\DataProvider\DataProvider"
+        <dataProvider class="Eloab\VNAddress\Model\Element\UiComponent\DataProvider\Region\DataProvider"
                       name="vnaddress_manage_index_listing_data_source">
             <settings>
                 <requestFieldName>region_id</requestFieldName>

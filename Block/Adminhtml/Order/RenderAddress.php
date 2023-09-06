@@ -2,38 +2,59 @@
 
 namespace Eloab\VNAddress\Block\Adminhtml\Order;
 
-
+use Eloab\VNAddress\Helper\Address;
+use Eloab\VNAddress\Helper\AddressQuerySupporter;
 use Magento\Backend\Block\Template\Context;
 use Magento\Directory\Helper\Data as DirectoryHelper;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use Magento\Framework\Registry;
-use Eloab\VNAddress\Helper\Address;
-use Eloab\VNAddress\Helper\AddressQuerySupporter;
 
 class RenderAddress extends \Magento\Backend\Block\Template
 {
+    /** @var string  */
     protected $_template = 'Eloab_VNAddress::renderAddressJs.phtml';
-
-    /** @var Registry  */
-    protected $registry = null;
+    /** @var Registry|null  */
+    protected Registry|null $registry;
     /** @var Address  */
-    protected $addressHelper;
+    protected Address $addressHelper;
     /** @var AddressQuerySupporter  */
-    protected $addressQuerySupporterHelper;
+    protected AddressQuerySupporter $addressQuerySupporterHelper;
 
-    public function __construct(Context $context, Registry $registry, Address $addressHelper, AddressQuerySupporter $addressQuerySupporterHelper, array $data = [], ?JsonHelper $jsonHelper = null, ?DirectoryHelper $directoryHelper = null)
-    {
+    /**
+     * @param Context $context
+     * @param Registry $registry
+     * @param Address $addressHelper
+     * @param AddressQuerySupporter $addressQuerySupporterHelper
+     * @param array $data
+     * @param JsonHelper|null $jsonHelper
+     * @param DirectoryHelper|null $directoryHelper
+     */
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        Address $addressHelper,
+        AddressQuerySupporter $addressQuerySupporterHelper,
+        array $data = [],
+        ?JsonHelper $jsonHelper = null,
+        ?DirectoryHelper $directoryHelper = null
+    ) {
         $this->registry = $registry;
         parent::__construct($context, $data, $jsonHelper, $directoryHelper);
         $this->addressHelper = $addressHelper;
         $this->addressQuerySupporterHelper = $addressQuerySupporterHelper;
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getCurrentAddress()
     {
         return $this->registry->registry('order_address');
     }
 
+    /**
+     * @return array
+     */
     public function getCurrentLocation() : array
     {
         $address = $this->getCurrentAddress();
@@ -47,6 +68,10 @@ class RenderAddress extends \Magento\Backend\Block\Template
         ];
     }
 
+    /**
+     * @param $areaId
+     * @return array
+     */
     public function getDistrictList($areaId) : array
     {
         $districtListData = [];
@@ -61,11 +86,16 @@ class RenderAddress extends \Magento\Backend\Block\Template
         return $districtListData;
     }
 
+    /**
+     * @param $districtName
+     * @return array
+     */
     public function getSubDistrictList($districtName) : array
     {
         $district = $this->getDistrict($districtName);
         $subDistrictListData = [];
-        $subDistrictList = $this->addressQuerySupporterHelper->getSubDistrictList($district->getData('district_id'));
+        $subDistrictList = $this->addressQuerySupporterHelper
+            ->getSubDistrictList($district->getData('district_id'));
         if ($subDistrictList->getSize()) {
             foreach ($subDistrictList as $subDistrict) {
                 $subDistrictListData[] = [
@@ -77,7 +107,12 @@ class RenderAddress extends \Magento\Backend\Block\Template
         return $subDistrictListData;
     }
 
-    public function getDistrict($districtName) {
+    /**
+     * @param $districtName
+     * @return \Magento\Framework\DataObject
+     */
+    public function getDistrict($districtName) : \Magento\Framework\DataObject
+    {
         return $this->addressQuerySupporterHelper->getDistrict($districtName);
     }
 

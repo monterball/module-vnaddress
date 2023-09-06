@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * View controller for Region data
+ * @package Eloab_VNAddress
+ * @author Bao Le
+ * @date 2022
+ */
 namespace Eloab\VNAddress\Controller\Adminhtml\Region;
 
 use Eloab\VNAddress\Helper\Address;
@@ -23,9 +28,18 @@ class View extends \Magento\Backend\App\Action
 
     /** @var Address  */
     protected $addressHelper;
+
     /** @var AddressQuerySupporter  */
     protected $addressQuerySupporterHelper;
 
+
+    /**
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
+     * @param Registry $registry
+     * @param Address $addressHelper
+     * @param AddressQuerySupporter $addressQuerySupporterHelper
+     */
     public function __construct(
         Context $context,
         PageFactory $resultPageFactory,
@@ -56,11 +70,11 @@ class View extends \Magento\Backend\App\Action
 
         $params = $this->getRequest()->getParams();
         try {
-            $entityId = $params['entity_id'];
-
+            //Set region ID and render the data information in block
+            $this->registry->register('region_id', $params['region_id']);
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__($e->getMessage()));
-            return $this->resultRedirectFactory->create()->setPath('catering/orders/grid');
+            return $this->resultRedirectFactory->create()->setPath('vnaddress/manage/index');
         }
         return $resultPage;
     }

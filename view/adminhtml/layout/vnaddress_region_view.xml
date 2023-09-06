@@ -5,6 +5,7 @@
         <referenceContainer name="content">
             <block class="Eloab\VNAddress\Block\Adminhtml\Region\View" name="address.region"
                    template="Eloab_VNAddress::region/view.phtml" />
+            <uiComponent name="vnaddress_district_manage_index_listing"/>
         </referenceContainer>
     </body>
 </page>

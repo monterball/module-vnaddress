@@ -32,8 +32,10 @@ class AddressQuerySupporter extends AbstractHelper
     public function getArea($name)
     {
         return $this->regionCollectionFactory->create()
-            ->addFieldToFilter('country_id',
-                \Eloab\VNAddress\Setup\Patch\Data\AddAreaForVN::VN_COUNTRY_ID)
+            ->addFieldToFilter(
+                'country_id',
+                \Eloab\VNAddress\Setup\Patch\Data\AddAreaForVN::VN_COUNTRY_ID
+            )
             ->addFieldToFilter('default_name', $name)->getFirstItem();
     }
 
@@ -43,8 +45,10 @@ class AddressQuerySupporter extends AbstractHelper
     public function getAreaList()
     {
         return $this->regionCollectionFactory->create()
-            ->addFieldToFilter('country_id',
-                \Eloab\VNAddress\Setup\Patch\Data\AddAreaForVN::VN_COUNTRY_ID);
+            ->addFieldToFilter(
+                'country_id',
+                \Eloab\VNAddress\Setup\Patch\Data\AddAreaForVN::VN_COUNTRY_ID
+            );
     }
 
     /**

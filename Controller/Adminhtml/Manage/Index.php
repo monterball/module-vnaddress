@@ -23,6 +23,7 @@ class Index extends Action implements HttpGetActionInterface
      */
     public function execute()
     {
-        return $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_PAGE);
+        return $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE);
     }
 }
