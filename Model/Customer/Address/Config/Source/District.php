@@ -7,22 +7,18 @@ declare(strict_types=1);
 
 namespace Eloab\VNAddress\Model\Customer\Address\Config\Source;
 
-use Magento\Directory\Model\Region;
-use Eloab\VNAddress\Model\ResourceModel\District\CollectionFactory;
+use Eloab\VNAddress\Helper\Address;
 
 class District extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 {
-    /** @var CollectionFactory  */
-    protected $districtCol;
-    /** @var Region */
-    protected $region;
+
+    /** @var Address  */
+    protected $addressHelper;
 
     public function __construct(
-        CollectionFactory $districtCol,
-        Region $region
+        Address $addressHelper
     )   {
-        $this->districtCol = $districtCol;
-        $this->region = $region;
+        $this->addressHelper = $addressHelper;
     }
 
     /**
@@ -33,7 +29,7 @@ class District extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
     public function getAllOptions()
     {
         if ($this->_options === null) {
-            $districtData = $this->districtCol->create()->getData();
+            $districtData = $this->addressHelper->getDistrictData();
             foreach ($districtData as $key => $district) {
                 $this->_options[] = ['value' => $district['district_id'], 'label' => $district['default_name']];
             }

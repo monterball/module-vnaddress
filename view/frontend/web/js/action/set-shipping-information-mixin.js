@@ -17,7 +17,6 @@ define([
             }
 
             if (shippingAddress.customAttributes) {
-                console.log(shippingAddress.customAttributes);
                 var attribute = shippingAddress.customAttributes.find(
                     function (element) {
                         return element.attribute_code === 'sub_district';

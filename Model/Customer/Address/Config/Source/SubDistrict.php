@@ -12,18 +12,12 @@ use Eloab\VNAddress\Model\ResourceModel\Subdistrict\CollectionFactory;
 
 class SubDistrict extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 {
-    /**
-     * @var CollectionFactory
-     **/
-    protected $subdistrictCol;
     /** @var Address  */
     protected $addressHelper;
 
     public function __construct(
-        CollectionFactory $subdistrictCol,
         Address $addressHelper
     )   {
-        $this->subdistrictCol = $subdistrictCol;
         $this->addressHelper = $addressHelper;
     }
 
@@ -36,7 +30,7 @@ class SubDistrict extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSou
     {
         if ($this->_options === null) {
             $this->_options[] = ['value' => '', 'label' => ''];
-            $subdistrictData = $this->subdistrictCol->create()->getData();
+            $subdistrictData = $this->addressHelper->getSubDistrictData();
             foreach ($subdistrictData as $key => $subdistrict) {
                 $this->_options[] = ['value' => $subdistrict['subdistrict_id'], 'label' => $subdistrict['default_name']];
             }

@@ -2,6 +2,9 @@
 /** @var \Eloab\VNAddress\Helper\Address $addressHelper */
 /** @var \Magento\Customer\Block\Address\Edit $block */
 $addressHelper = $this->helper('Eloab\VNAddress\Helper\Address');
+$blockAddress = $block->getAddress();
+$subdtrsCode = \Eloab\VNAddress\Model\Constant::SUBDISTRICT_CODE;
+$sudDistrict = $blockAddress->getCustomAttribute($subdtrsCode);
 ?>
 <script>
     require(['jquery'], function($) {
@@ -10,14 +13,14 @@ $addressHelper = $this->helper('Eloab\VNAddress\Helper\Address');
             SubDistrictData = <?= json_encode($addressHelper->getSubDistrictData())?>,
             DistrictSelect = $("select#city_id"),
             DistrictInput = $("input#city"),
-            SubDistrictSelect = $("select#sub_district");
+            SubDistrictSelect = $("select#<?= $escaper->escapeHtmlAttr($subdtrsCode) ?>");
 
 
         var AddressUpdater = {
-            regionIdFlag: <?= $block->getAddress()->getRegionId() ? $block->getAddress()->getRegionId() : '""'  ?>,
-            districtIdFlag: '<?= $block->getAddress()->getCity() ? $block->getAddress()->getCity() : '""' ?>',
-            subDistrictIdFlag: '<?= ($sudDistrict = $addressHelper->getSubDistrictObj($block->getAddress())) ?
-                $escaper->escapeHtmlAttr($sudDistrict->getId()) : '' ?>',
+            regionIdFlag: <?= $blockAddress->getRegionId() ? $blockAddress->getRegionId() : '""'  ?>,
+            districtIdFlag: '<?= $blockAddress->getCity() ? $blockAddress->getCity() : '""' ?>',
+            subDistrictIdFlag: '<?= !empty($sudDistrict) ?
+                $escaper->escapeHtmlAttr($sudDistrict->getValue()) : '' ?>',
 
             init: function() {
                 this.insertDistrictOptions(true);

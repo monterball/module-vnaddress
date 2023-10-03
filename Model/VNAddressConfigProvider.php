@@ -13,16 +13,6 @@ class VNAddressConfigProvider implements ConfigProviderInterface
 {
 
     /**
-     * @var \Eloab\VNAddress\Model\ResourceModel\District\CollectionFactory
-     **/
-    protected $districtCol;
-
-    /**
-     * @var \Eloab\VNAddress\Model\ResourceModel\Subdistrict\CollectionFactory
-     **/
-    protected $subdistrictCol;
-
-    /**
      * @var \Eloab\VNAddress\Helper\Address
      */
     protected $addressHelper;
@@ -30,47 +20,23 @@ class VNAddressConfigProvider implements ConfigProviderInterface
 
      /**
      * Constructor
-     * @param \Eloab\VNAddress\Model\ResourceModel\District\CollectionFactory
-     * @param \Eloab\VNAddress\Model\ResourceModel\Subdistrict\CollectionFactory
      * @param \Eloab\VNAddress\Helper\Address $addressHelper
      **/
 
     public function __construct(
-        \Eloab\VNAddress\Model\ResourceModel\District\CollectionFactory $districtCol,
-        \Eloab\VNAddress\Model\ResourceModel\Subdistrict\CollectionFactory $subdistrictCol,
         \Eloab\VNAddress\Helper\Address $addressHelper
     )   {
-        $this->districtCol = $districtCol;
-        $this->subdistrictCol = $subdistrictCol;
         $this->addressHelper = $addressHelper;
     }
 
 
     public function getConfig()
     {
-        $configDistrict = [];
-        $configSubdistrict = [];
-
-        $districtCollection = $this->districtCol->create();
-        $districtCollection->setLocale('vi_VN');
-        $districtData = $districtCollection->getData();
+        //District
+        $districtData = $this->addressHelper->getDistrictData();
         //Subdistrict
-        $subdistrictData = $this->subdistrictCol->create()->getData();
+        $subdistrictData = $this->addressHelper->getSubDistrictData();
 
-
-        foreach ($subdistrictData as $subdistrict) {
-            $configSubdistrict[$subdistrict['district_id']][] = $subdistrict;
-        }
-
-        foreach ($districtData as $district) {
-            $aDistrictData = $district;
-            if (!empty($configSubdistrict[$district['district_id']])) {
-                $aDistrictData['subdistricts'] = $configSubdistrict[$district['district_id']];
-            }
-            $configDistrict[$district['region_id']][] = $aDistrictData;
-        }
-
-        $configArray['vnAddressData'] = $configDistrict;
         $configArray['vnAddressDistrict'] = $this->prepareOnlyDistrict($districtData);
         $configArray['vnAddressSubdistrict'] = $this->prepareOnlySubdistrict($subdistrictData);
 
@@ -81,11 +47,7 @@ class VNAddressConfigProvider implements ConfigProviderInterface
     {
         $result = [];
         foreach ($districtData as $district) {
-            $districtName = $this->addressHelper->getDistrictNameById(
-                $district['district_id'],
-                $this->addressHelper->getLocale()
-            );
-            $district['default_name'] = $districtName;
+            $district['default_name'] = $district['name'];
             $result[$district['region_id']][] = $district;
         }
         return $result;
@@ -95,7 +57,7 @@ class VNAddressConfigProvider implements ConfigProviderInterface
     {
         $result = [];
         foreach ($subdistrictData as $subdistrict) {
-            $subdistrict['default_name'] = $this->addressHelper->getSubDistrictNameById($subdistrict['subdistrict_id']);
+            $subdistrict['default_name'] = $subdistrict['name'];
             $result[$subdistrict['district_id']][] = $subdistrict;
         }
         return $result;

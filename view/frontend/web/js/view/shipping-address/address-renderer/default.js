@@ -21,7 +21,6 @@ define([
     var countryData = customerData.get('directory-data');
     var regionDistrictData = window.checkoutConfig.vnAddressDistrict,
         districtSubdistrictData = window.checkoutConfig.vnAddressSubdistrict;
-    var oldDefaultCutOff = window.checkoutConfig.default_cutoff;
 
     return Component.extend({
         defaults: {
@@ -59,7 +58,6 @@ define([
          * @return {String}
          */
         getDistrictName: function (address) {
-            console.log(address);
             var districtId = address.city,
                 regionId = address.regionId;
             if (regionId === undefined) {
@@ -76,7 +74,6 @@ define([
 
                 if (district) {
                     var subdistrictName = '';
-                    console.log(address.customAttributes);
                     if (address.customAttributes) {
                         let subdistrictValue = _.find(address.customAttributes, function(obj, key) {
                             return obj.attribute_code && obj.attribute_code === 'sub_district';

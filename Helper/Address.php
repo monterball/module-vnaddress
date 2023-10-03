@@ -6,6 +6,7 @@
 
 namespace Eloab\VNAddress\Helper;
 
+use Eloab\VNAddress\Model\Constant;
 use Eloab\VNAddress\Model\DistrictFactory;
 use Eloab\VNAddress\Model\ResourceModel\District\CollectionFactory;
 use Eloab\VNAddress\Model\SubdistrictFactory;
@@ -39,6 +40,8 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     protected $addressMapper;
     /** @var \Magento\Framework\Locale\Resolver  */
     protected $resolver;
+    /** @var string */
+    protected $locale;
 
     /**
      * @param Context $context
@@ -98,16 +101,13 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * @param $address
+     * @param $subDistrictCode
      * @return string
      */
-    public function getSubDistrictName($address)
+    public function getSubDistrictName($subDistrictCode)
     {
-        if ($subDistrict = $this->getSubDistrictObj($address)) {
-            $subDistrictName = $this->getSubDistrictNameById($subDistrict->getId());
-            return $subDistrictName ?? '';
-        }
-        return '';
+        $subDistrictName = $this->getSubDistrictNameById($subDistrictCode);
+        return $subDistrictName ?? '';
     }
 
     public function getAddressObjById($addressId)
@@ -123,9 +123,9 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     {
         if ($address->getId()) {
             $customerAddresses = $this->addressFactory->create()->load($address->getId());
-            if ($customerAddresses->getData('sub_district')) {
+            if ($customerAddresses->getData(Constant::SUBDISTRICT_CODE)) {
                 return $this->subdistrictFactory->create()->load(
-                    $customerAddresses->getData('sub_district')
+                    $customerAddresses->getData(Constant::SUBDISTRICT_CODE)
                 );
             }
         }
@@ -137,7 +137,8 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDistrictCol()
     {
-        $districtCollection = $this->districtCollection->create()->load();
+        $districtCollection = $this->districtCollection->create();
+        $districtCollection->setLocale($this->getLocale());
         $districtCollection->addOrder('default_name', 'ASC');
         return $districtCollection;
     }
@@ -145,17 +146,24 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return array
      */
-    public function getDistrictData()
+    public function getDistrictData() : array
     {
-        $districts = $this->getDistrictCol()->getData();
-        $newDistricts = [];
+        $adapter = $this->resource->getConnection();
+        $table = $adapter->getTableName('directory_region_district');
+        $tableName = $adapter->getTableName('directory_country_region_district_name');
+        $select = $adapter->select()
+            ->from(['m' => $table],'*')
+            ->joinLeft(
+                ['n' => $tableName],
+                "m.district_id = n.district_id AND n.locale = '".$this->getLocale()."'",
+                ['n.name']
+            )->order('n.name ASC');
+        $districts = $adapter->fetchAll($select);
+
         if (count($districts) > 0) {
-            foreach ($districts as $district) {
-                $district['name'] = $this->getDistrictName($district['district_id']);
-                $newDistricts[] = $district;
-            }
+            return $districts;
         }
-        return $newDistricts;
+        return [];
     }
 
     /**
@@ -185,15 +193,22 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getSubDistrictData()
     {
-        $subdistricts = $this->getSubDistrictCol()->getData();
-        $newSubDistricts = [];
+        $adapter = $this->resource->getConnection();
+        $table = $adapter->getTableName('directory_district_subdistrict');
+        $tableName = $adapter->getTableName('directory_country_region_district_subdistrict_name');
+        $select = $adapter->select()
+            ->from(['m' => $table],'*')
+            ->joinLeft(
+                ['n' => $tableName],
+                "m.subdistrict_id = n.subdistrict_id AND n.locale = '".$this->getLocale()."'",
+                ['n.name']
+            )->order('n.name ASC');
+        $subdistricts = $adapter->fetchAll($select);
+
         if (count($subdistricts) > 0) {
-            foreach ($subdistricts as $subdistrict) {
-                $subdistrict['name'] = $this->getSubDistrictNameById($subdistrict['subdistrict_id']);
-                $newSubDistricts[] = $subdistrict;
-            }
+            return $subdistricts;
         }
-        return $newSubDistricts;
+        return [];
     }
 
     /**
@@ -207,7 +222,7 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
         if ($addressId) {
             /** @var SalesAddress $customerAddresses */
             $customerAddresses = $this->saleAddressFactory->create()->load($addressId);
-            $customerAddresses->setData('sub_district', $subdistrictId);
+            $customerAddresses->setData(Constant::SUBDISTRICT_CODE, $subdistrictId);
             $customerAddresses->save();
         }
     }
@@ -291,9 +306,9 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $builtOutputAddressData = $this->addressMapper->toFlatArray($address);
         $addressArray = [];
-        if (!empty($valueSDistrict = $builtOutputAddressData['sub_district'])) {
+        if (!empty($valueSDistrict = $builtOutputAddressData[Constant::SUBDISTRICT_CODE])) {
             foreach ($this->addressMapper->toFlatArray($address) as $key => $value) {
-                if ($key == 'sub_district') {
+                if ($key == Constant::SUBDISTRICT_CODE) {
                     continue;
                 } elseif ($key == 'city') {
                     $districtName = $this->getDistrictNameById($value);
@@ -410,7 +425,10 @@ class Address extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getLocale()
     {
-        return $this->resolver->getLocale();
+        if (!$this->locale) {
+            $this->locale = $this->resolver->getLocale();
+        }
+        return $this->locale;
     }
 
 

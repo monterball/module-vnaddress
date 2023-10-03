@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Eloab\VNAddress\Model\ResourceModel\District;
 
+use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
 class Collection extends AbstractCollection
@@ -43,11 +44,20 @@ class Collection extends AbstractCollection
 
     /**
      * @param string $localeCode
-     * @return void
+     * @return $this
      */
-    public function setLocale(string $localeCode = 'en_US') : void
+    public function setLocale(string $localeCode = 'en_US') : Collection
     {
         $this->localeCode = $localeCode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale() : string
+    {
+        return $this->localeCode;
     }
 
     /**

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Eloab\VNAddress\Setup\Patch\Data;
 
+use Eloab\VNAddress\Model\Constant;
 use Magento\Customer\Model\Indexer\Address\AttributeProvider;
 use Magento\Customer\Setup\CustomerSetup;
 use Magento\Customer\Setup\CustomerSetupFactory;
@@ -64,7 +65,7 @@ class AddAddressAttributeSubDistrictCustomer implements DataPatchInterface, Patc
         $attributeSet = $this->attributeSetFactory->create();
         $attributeGroupId = $attributeSet->getDefaultGroupId($attributeSetId);
 
-        $customerSetup->addAttribute(AttributeProvider::ENTITY, 'sub_district', [
+        $customerSetup->addAttribute(AttributeProvider::ENTITY, Constant::SUBDISTRICT_CODE, [
             'type' => 'int',
             'label' => 'Ward',
             'input' => 'select',
@@ -76,7 +77,8 @@ class AddAddressAttributeSubDistrictCustomer implements DataPatchInterface, Patc
             'backend' => ''
         ]);
 
-        $attribute = $customerSetup->getEavConfig()->getAttribute(AttributeProvider::ENTITY, 'sub_district');
+        $attribute = $customerSetup->getEavConfig()->getAttribute(AttributeProvider::ENTITY,
+            Constant::SUBDISTRICT_CODE);
         $attribute->addData([
             'used_in_forms' => [
                 'adminhtml_customer_address',
@@ -98,7 +100,8 @@ class AddAddressAttributeSubDistrictCustomer implements DataPatchInterface, Patc
         $this->moduleDataSetup->getConnection()->startSetup();
         /** @var CustomerSetup $customerSetup */
         $customerSetup = $this->customerSetupFactory->create(['setup' => $this->moduleDataSetup]);
-        $customerSetup->removeAttribute(\Magento\Customer\Model\Customer::ENTITY, 'sub_district');
+        $customerSetup->removeAttribute(\Magento\Customer\Model\Customer::ENTITY,
+            Constant::SUBDISTRICT_CODE);
 
         $this->moduleDataSetup->getConnection()->endSetup();
     }

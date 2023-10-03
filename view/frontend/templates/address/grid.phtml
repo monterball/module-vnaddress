@@ -35,7 +35,8 @@ $addressHelper = $this->helper('Eloab\VNAddress\Helper\Address');
                     <?php foreach ($_pAddsses as $address) : ?>
                     <?php
                         //Merge the subdistrict into the district
-                        if ($subDistrictName = $addressHelper->getSubDistrictName($address)) {
+                        if ($subDistrictName = $addressHelper->getSubDistrictName($address->getCustomAttribute(
+                            \Eloab\VNAddress\Model\Constant::SUBDISTRICT_CODE))) {
                             $subDistrictName .= ', ';
                         }
                         $city = $subDistrictName . $address->getCity();

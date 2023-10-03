@@ -12,6 +12,7 @@
 /** @var \Eloab\VNAddress\Helper\Address $addressHelper */
 $viewModel = $block->getViewModel();
 $regionProvider = $block->getRegionProvider();
+$subdtrsCode = \Eloab\VNAddress\Model\Constant::SUBDISTRICT_CODE;
 ?>
 <?php $_company = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Company::class) ?>
 <?php $_telephone = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Telephone::class) ?>
@@ -167,18 +168,19 @@ $regionProvider = $block->getRegionProvider();
                 </select>
             </div>
         </div>
-        <div class="field sub_district">
-            <label class="label" for="sub_district">
+        <div class="field <?= $escaper->escapeHtmlAttr($subdtrsCode) ?>">
+            <label class="label" for="<?= $escaper->escapeHtmlAttr($subdtrsCode) ?>">
                 <span><?= /* @noEscape */ __('Subdistrict') ?></span>
             </label>
             <div class="control">
                 <select <?= $showSelect ? 'style="display: none;"' : ''  ?>
-                    name="sub_district"
-                    data-default-value="<?= ($sudDistrict = $addressHelper->getSubDistrictObj($block->getAddress())) ?
-                        $escaper->escapeHtmlAttr($sudDistrict->getId()) : '' ?>"
+                    name="<?= $escaper->escapeHtmlAttr($subdtrsCode) ?>"
+                    data-default-value="<?= ($sudDistrict = $block->getAddress()->getCustomAttribute(
+                        $subdtrsCode)) ?
+                        $escaper->escapeHtmlAttr($sudDistrict->getValue()) : '' ?>"
                     title="<?= $escaper->escapeHtmlAttr(__('Subdistrict')) ?>"
                     class="input-text"
-                    id="sub_district">
+                    id="<?= $escaper->escapeHtmlAttr($subdtrsCode) ?>">
                     <option value=""><?= __('Please select') ?></option>
                 </select>
             </div>
