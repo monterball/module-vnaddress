@@ -1,4 +1,10 @@
 <?xml version="1.0"?>
+<!--/**-->
+<!-- * Module VN address of Eloab package-->
+<!-- * @package Eloab_VNAddress-->
+<!-- * @author Bao Le-->
+<!-- * @date 2022-->
+<!-- */-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 

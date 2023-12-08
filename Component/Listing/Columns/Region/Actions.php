@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © Eloab DevTeam All rights reserved.
+ * See COPYING.txt for license details.
+ */
 namespace Eloab\VNAddress\Component\Listing\Columns\Region;
 
 use Magento\Framework\UrlInterface;

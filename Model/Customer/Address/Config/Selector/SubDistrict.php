@@ -9,7 +9,10 @@ namespace Eloab\VNAddress\Model\Customer\Address\Config\Selector;
 
 use Eloab\VNAddress\Helper\Address;
 use Eloab\VNAddress\Model\ResourceModel\Subdistrict\CollectionFactory;
-
+/**
+ * Copyright © Eloab DevTeam All rights reserved.
+ * See COPYING.txt for license details.
+ */
 class SubDistrict extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
 {
     /**

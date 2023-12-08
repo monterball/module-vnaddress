@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Copyright © Eloab DevTeam All rights reserved.
+ * See COPYING.txt for license details.
+ */
 namespace Eloab\VNAddress\Block\Adminhtml\Order;
 
 use Eloab\VNAddress\Helper\Address;

@@ -43,14 +43,8 @@ if (!empty($currentLocation)) {
                         htmlSubDistrictDropDown += "</select>";
                         dropdownSubdistrcit.after(htmlSubDistrictDropDown);
                     <?php
-                    else:
-                    ?>
-
-                    <?php
-
                     endif;
                     ?>
-
                 $('#region_id').on('change', function (e) {
                     new Ajax.Request('<?= $block->getUrlGetDistrictList()?>', {
                         parameters: {

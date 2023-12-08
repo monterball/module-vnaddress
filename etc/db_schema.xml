@@ -1,4 +1,10 @@
 <?xml version="1.0" ?>
+<!--/**-->
+<!-- * Module VN address of Eloab package-->
+<!-- * @package Eloab_VNAddress-->
+<!-- * @author Bao Le-->
+<!-- * @date 2022-->
+<!-- */-->
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
 	<table name="sales_order_address">
 		<column name="sub_district" nullable="true" xsi:type="varchar" length="256" comment="Ward"/>
