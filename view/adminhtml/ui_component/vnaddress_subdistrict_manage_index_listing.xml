@@ -3,29 +3,29 @@
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="provider" xsi:type="string">vnaddress_district_manage_index_listing.vnaddress_district_manage_index_listing_data_source</item>
-            <item name="deps" xsi:type="string">vnaddress_district_manage_index_listing.vnaddress_district_manage_index_listing_data_source</item>
+            <item name="provider" xsi:type="string">vnaddress_subdistrict_manage_index_listing.vnaddress_subdistrict_manage_index_listing_data_source</item>
+            <item name="deps" xsi:type="string">vnaddress_subdistrict_manage_index_listing.vnaddress_subdistrict_manage_index_listing_data_source</item>
         </item>
     </argument>
     <settings>
-        <spinner>vnaddress_district_manage_index_listing_columns</spinner>
+        <spinner>vnaddress_subdistrict_manage_index_listing_columns</spinner>
         <deps>
-            <dep>vnaddress_district_manage_index_listing.vnaddress_district_manage_index_listing_data_source</dep>
+            <dep>vnaddress_subdistrict_manage_index_listing.vnaddress_subdistrict_manage_index_listing_data_source</dep>
         </deps>
     </settings>
-    <dataSource name="vnaddress_district_manage_index_listing_data_source" component="Magento_Ui/js/grid/provider">
+    <dataSource name="vnaddress_subdistrict_manage_index_listing_data_source" component="Magento_Ui/js/grid/provider">
         <settings>
             <storageConfig>
-                <param name="indexField" xsi:type="string">district_id</param>
+                <param name="indexField" xsi:type="string">subdistrict_id</param>
             </storageConfig>
             <updateUrl path="mui/index/render"/>
         </settings>
         <aclResource>Eloab_VNAddress::listing</aclResource>
         <dataProvider class="Eloab\VNAddress\Model\Element\UiComponent\DataProvider\District\DataProvider"
-                      name="vnaddress_district_manage_index_listing_data_source">
+                      name="vnaddress_subdistrict_manage_index_listing_data_source">
             <settings>
-                <requestFieldName>district_id</requestFieldName>
-                <primaryFieldName>district_id</primaryFieldName>
+                <requestFieldName>subdistrict_id</requestFieldName>
+                <primaryFieldName>subdistrict_id</primaryFieldName>
             </settings>
         </dataProvider>
     </dataSource>
@@ -36,30 +36,25 @@
         <filters name="listing_filters"/>
         <paging name="listing_paging"/>
     </listingToolbar>
-    <columns name="vnaddress_district_manage_index_listing_columns">
-        <column name="district_id">
+    <columns name="vnaddress_subdistrict_manage_index_listing_columns">
+        <column name="subdistrict_id">
             <settings>
                 <filter>textRange</filter>
                 <label translate="true">ID</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
-        <column name="district_code">
+        <column name="subdistrict_code">
             <settings>
                 <filter>text</filter>
-                <label translate="true">District Code</label>
+                <label translate="true">Subdistrict/Ward Code</label>
             </settings>
         </column>
         <column name="default_name">
             <settings>
                 <filter>text</filter>
-                <label translate="true">District Name</label>
+                <label translate="true">Subdistrict/Ward Name</label>
             </settings>
         </column>
-        <actionsColumn name="actions" class="Eloab\VNAddress\Component\Listing\Columns\District\Actions">
-            <settings>
-                <label translate="true">Actions</label>
-            </settings>
-        </actionsColumn>
     </columns>
 </listing>

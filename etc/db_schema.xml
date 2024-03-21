@@ -54,7 +54,7 @@
 
     <!-- End District Table -->
 
-    <!-- SubDistrict Table -->
+    <!-- Subdistrict Table -->
     <table name="directory_district_subdistrict" resource="default" engine="innodb" comment="Directory District Subdistrict">
         <column xsi:type="int" name="subdistrict_id" unsigned="true" nullable="false" identity="true"
                 comment="Subdistrict ID"/>
@@ -89,6 +89,6 @@
             <column name="subdistrict_id"/>
         </index>
 	</table>
-    <!-- End SubDistrict Table -->
+    <!-- End Subdistrict Table -->
 
 </schema>

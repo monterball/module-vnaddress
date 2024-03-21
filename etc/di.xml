@@ -44,4 +44,22 @@
             </argument>
         </arguments>
     </type>
+    <!-- Data source for SubDistrict/Ward list-->
+    <virtualType name="vnaddress_subdistrict_manage_index_listing_data_source"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="resourceModel" xsi:type="string">Eloab\VNAddress\Model\ResourceModel\Subdistrict\Collection
+            </argument>
+            <argument name="mainTable" xsi:type="string">directory_district_subdistrict</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument xsi:type="array">
+                <item xsi:type="string" name="vnaddress_subdistrict_manage_index_listing_data_source">
+                    vnaddress_subdistrict_manage_index_listing_data_source
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>

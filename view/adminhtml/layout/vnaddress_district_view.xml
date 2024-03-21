@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="Eloab\VNAddress\Block\Adminhtml\District\View" name="address.district"
+                   template="Eloab_VNAddress::district/view.phtml" />
+            <uiComponent name="vnaddress_subdistrict_manage_index_listing"/>
+        </referenceContainer>
+    </body>
+</page>

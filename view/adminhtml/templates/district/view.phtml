@@ -1,0 +1,83 @@
+<?php
+/**
+ * Template render district information
+ */
+/** @var \Eloab\VNAddress\Block\Adminhtml\District\View $block */
+    if ($district = $block->getDistrict()) :
+?>
+        <main id="anchor-content" class="page-content">
+            <div class="page-main-actions">
+                <div class="page-actions">
+                    <div class="page-actions-inner">
+                        <div class="page-actions-buttons">
+                            <button id="back" title="Back"
+                                    type="button" class="action-default scalable back">
+                                <span><?= __("Back") ?></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="page:main-container" class="page-columns">
+                <div id="container" class="main-col">
+                    <div class="admin__old">
+                        <div class="entry-edit order-view">
+                            <div style="" class="ui-tabs-panel ui-widget-content ui-corner-bottom"
+                                 role="tabpanel"
+                                 aria-hidden="false">
+                                <section class="admin__page-section order-view-account-information">
+                                    <div class="admin__page-section-title">
+                                        <span class="title"><?= $district->getName() ?></span>
+                                    </div>
+                                    <div class="admin__page-section-content">
+                                        <div class="admin__page-section-item order-information">
+                                            <div class="admin__page-section-item-title">
+                                                <span class="title"><?= __("Information") ?></span>
+                                            </div>
+                                            <div class="admin__page-section-item-content">
+                                                <table class="admin__table-secondary order-information-table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <th><?= __("Default Name") ?></th>
+                                                        <td><?= $district->getDefaultName() ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><?= __("Code") ?></th>
+                                                        <td><?= $district->getDistrictCode() ?></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="admin__page-section-item order-account-information">
+                                            <div class="admin__page-section-item-title">
+                                                <span class="title"><?= __("District Name") ?></span>
+                                                <div class="actions">
+                                                </div>
+                                            </div>
+                                            <div class="admin__page-section-item-content">
+                                                <table class="admin__table-secondary order-account-information-table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <th><?= __("Eng Name") ?></th>
+                                                        <td><?= $block->getDistrictName($district->getId()) ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><?= __("Vi Name") ?></th>
+                                                        <td><?= $block->getDistrictName($district->getId(), 'vi_VN') ?></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+<?php
+    endif;
